@@ -1,0 +1,15 @@
+[package]
+name = "overgg"
+version = "0.1.0"
+authors = ["caemor <caemor@users.noreply.github.com>"]
+
+[dependencies]
+# For requesting and reading the html
+reqwest = "0.7.3"
+select = "0.4.2"
+
+# For logs
+log = "0.3"
+
+
+
