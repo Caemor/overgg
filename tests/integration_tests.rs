@@ -2,6 +2,8 @@ extern crate overgg;
 
 use overgg::social::*;
 use overgg::upcoming_matches;
+use overgg::news;
+use overgg::search;
 
 #[test]
 fn social() {
@@ -15,5 +17,16 @@ fn social() {
 #[test]
 fn upcoming_matches() {
 	assert_eq!(upcoming_matches::get_x(3).unwrap().len(), 3);
+}
+
+#[test]
+fn news() {
+	assert_eq!(news::get_x(3).unwrap().len(), 3);
+}
+
+
+#[test]
+fn search() {
+	assert_eq!(search::get_x("a", 3).unwrap().len(), 3);
 }
 

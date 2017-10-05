@@ -1,3 +1,43 @@
+
+struct Team {
+	name: String,
+	logo: String,
+	description: String,
+	url: String
+}
+
+impl Team {
+	fn new(name: String, logo: String, description: String, url: String) -> Team {
+		Team {
+			name: name,
+			logo: logo,
+			description: description,
+			url: url
+		}
+	}
+}
+
+
+/*
+
+Team
+-Link to Teampage
+-Teamname
+-Region
+-Logo
+-Roster (of multiple Players)
+-Upcoming Matches
+-Recent Matches
+
+-Pricemoney?
+
+-events
+
+*/
+
+
+
+
 command!(team(_ctx, message, args) {
 	let mut id: i64 = 0;
 	let channel_id = message.channel_id;
@@ -121,23 +161,7 @@ fn edit_link(link: String) -> String {
 
 
 
-struct Team {
-	name: String,
-	logo: String,
-	description: String,
-	url: String
-}
 
-impl Team {
-	fn new(name: String, logo: String, description: String, url: String) -> Team {
-		Team {
-			name: name,
-			logo: logo,
-			description: description,
-			url: url
-		}
-	}
-}
 
 
 

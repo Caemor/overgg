@@ -1,3 +1,41 @@
+
+struct Event {
+	name: String,
+	url: String,
+
+	image: String,
+
+	location: String,
+	price_pool: u32,
+
+	start: String,
+	end: String,
+
+
+	description: String,
+	url: String
+}
+
+impl Event {
+	fn new(name: String, description: String, url: String) -> Event {
+		Event {
+			name: name,
+			description: description,
+			url: url
+		}
+	}
+}
+
+
+
+#[derive(Debug)]
+enum EventError {
+    IDNotFound,
+}
+
+type EventResult = Result<Event, EventError>;
+
+
 	let id: i64;
 	let channel_id = message.channel_id;
 	
@@ -32,30 +70,7 @@
 	} 
 
 
-	struct Event {
-	name: String,
-	description: String,
-	url: String
-}
 
-impl Event {
-	fn new(name: String, description: String, url: String) -> Event {
-		Event {
-			name: name,
-			description: description,
-			url: url
-		}
-	}
-}
-
-
-
-#[derive(Debug)]
-enum EventError {
-    IDNotFound,
-}
-
-type EventResult = Result<Event, EventError>;
 
 fn get_event(id: i64) -> EventResult {
     

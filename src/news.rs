@@ -1,5 +1,6 @@
 use select::predicate::{Class, Name};
 use helpers::*;
+use social::WEBSITE;
 
 
 #[derive(Default, Debug, PartialEq)]
@@ -31,7 +32,7 @@ pub fn get_x(number_of_news: u32) -> Result<Vec<News>, String> {
 
 
 fn news(number_of_news: u32) -> Result<Vec<News>, String> {
-	let document = getcontent("https://www.over.gg/news")?;
+	let document = getcontent(&(WEBSITE.to_string() + "/news"))?;
 
     let mut news_list: Vec<News> = Vec::new();
 
@@ -42,7 +43,7 @@ fn news(number_of_news: u32) -> Result<Vec<News>, String> {
 				firstrow = false;
 				continue;
 			}
-			let news = tablerow.find(Name("a")).next().unwrap();
+			let news = tablerow.find(Name("a")).next().ok_or("news.rs: Could not get Tablerow of url")?;
 			let link = news.attr("href").ok_or("news.rs: Could not get url")?;
 			let link: String = fix_link(link);
 			let text = news.text();
@@ -63,7 +64,7 @@ fn news(number_of_news: u32) -> Result<Vec<News>, String> {
 
 				trace!("{:?}", th.text());
 			}
-			author = remove_clutter(author);
+			author = remove_clutter(author).replace("by ", "");
 			published = remove_clutter(published);
 
 			let news = News::new(link, text, author, published);

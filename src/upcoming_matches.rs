@@ -14,7 +14,11 @@ pub struct UpcomingMatch {
 	pub team1: UpcomingTeam,
 	///Team 2
 	pub team2: UpcomingTeam,
-	///Time remaining until the start of the match
+	///Time remaining until the start of the match (e.g 'starts in 2d 1h' or 'starts in 12h 2m')
+    pub eta: String,
+    ///Date of the start of the match (e.g: Today, Tomorrow, August 7th)
+    pub date: String,
+    ///Time of the event (like '6:00 PM')
     pub time: String,
     ///Name of the Event of the Game
     pub eventname: String,
@@ -39,7 +43,7 @@ pub fn get() -> Result<Vec<UpcomingMatch>, String> {
 	matches(None)
 }
 
-/// Returns the first x upcoming matches from over.gg
+/// Returns the first x upcoming matches from over.gg (if there are less than x matches (e.g. y with y < x) it only returns the first y matches
 pub fn get_x(number_of_matches: u32) -> Result<Vec<UpcomingMatch>, String> {
 	matches(Some(number_of_matches))
 }
@@ -73,31 +77,29 @@ fn matches(number_of_matches: Option<u32>) -> Result<Vec<UpcomingMatch>, String>
 	Ok(matches)
 }
 //TODO make test cases!
-fn parse_match(game: select::node::Node, event_date_storage: &str) -> Result<(UpcomingMatch, String), String> {
+//date_storage is needed, as it is not founded in every line of the upcoming match table
+fn parse_match(game: select::node::Node, date_storage: &str) -> Result<(UpcomingMatch, String), String> {
 	//
-	let mut event_date_storage = event_date_storage.to_string();
+	let mut date_storage = date_storage.to_string();
 	
 	trace!("{:?}", remove_clutter(game.html()));
 	let link = "https://over.gg".to_string() + game.attr("href").ok_or("Could not get link to the match")?;
 	let eventname = game.find(Class("match-item-event-name")).next().ok_or("Could not get Eventname")?.text();
 	let eventsub = game.find(Class("match-item-event-sub")).next().ok_or("Could not get Event subname")?.text();
 
-	let mut event_date = game.find(Class("match-item-date")).next().ok_or("Could not get Eventdate")?.text().trim().to_string();
-	
-	if event_date == "" {
-		event_date = event_date_storage.clone();
+	let mut date = game.find(Class("match-item-date")).next().ok_or("Could not get Eventdate")?.text().trim().to_string();
+
+	if date == "" {
+		date = date_storage.clone();
 	} else {
-		event_date_storage = event_date;
+		date_storage = date.clone();
 	}
 
-	let event_time = game.find(Class("match-item-time")).next().ok_or("Could not get Event time")?.text();
-	
+	let time = game.find(Class("match-item-time")).next().ok_or("Could not get Event time")?.text();
+		
 
 
 	let mut one = true;
-
-
-
 	let mut team1 = UpcomingTeam::default();
 	let mut team2 = UpcomingTeam::default();
 
@@ -121,18 +123,18 @@ fn parse_match(game: select::node::Node, event_date_storage: &str) -> Result<(Up
 			team2 = UpcomingTeam{name, score, flag: None};	
 		}
 	}
-	let eventtime = game.find(Class("match-item-eta")).next().ok_or("Could not get time remaining until event starts")?.text();
+	let eta = game.find(Class("match-item-eta")).next().ok_or("Could not get time remaining until event starts")?.text();
 
 	let eventname = remove_clutter(eventname);
 	let eventsub = remove_clutter(eventsub);
-	let time = remove_clutter(eventtime.to_lowercase());
+	let eta = remove_clutter(eta.to_lowercase());
+	let time = remove_clutter(time);
 
 
-
-	let upc_match = UpcomingMatch {team1, team2, time, eventname, eventsub, link};
+	let upc_match = UpcomingMatch {team1, team2, eta, date, time, eventname, eventsub, link};
 	
 
-	Ok((upc_match, event_date_storage))
+	Ok((upc_match, date_storage))
 
 }
 

@@ -57,7 +57,7 @@ fn search(search_term: &str, number_of_results: Option<u32>) -> Result<Vec<Searc
 
 	for node in document.find(Attr("id", "content")).take(1) {
 		
-		let number_of_results = get_number_of_results(node.find(Name("div")).next().unwrap().text());
+		let number_of_results = get_number_of_results(node.find(Name("div")).next().ok_or("search.rs: Could not get number of results div")?.text())?;
 		if number_of_results == 0 {
 			return Ok(search_results);
 		}
@@ -116,7 +116,7 @@ fn search(search_term: &str, number_of_results: Option<u32>) -> Result<Vec<Searc
 }
 
 
-fn get_number_of_results(toshorten: String) -> i32 {
+fn get_number_of_results(toshorten: String) -> Result<i32, String> {
 	let toshorten = toshorten.replace("\t", "");
 	let toshorten = toshorten.replace("\n", "");
 	let toshorten = toshorten.replace("\"", "");
@@ -125,139 +125,5 @@ fn get_number_of_results(toshorten: String) -> i32 {
 	let toshorten = toshorten.replace(" result", "");
 	let toshorten = toshorten.trim();
 
-	return toshorten.to_string().parse::<i32>().unwrap();
+	return toshorten.to_string().parse::<i32>().map_err(|e| e.to_string() + "Could not get number of results!");
 }
-
-fn teamname_previously(toshorten: &str) -> String {
-	toshorten.replace("previously", " previously ")
-}
-
-/*
-
-command!(search(_ctx, msg, args) {	
-
-
-
-
-    let mut answer = String::new();
-
-
-	for node in document.find(Attr("id", "content")).take(1) {
-		let number_of_results = get_number_of_results(node.find(Name("div")).next().unwrap().text());
-
-		if number_of_results == 0 {
-			embed_error(msg.channel_id, "No result found for this searchterm");
-			return Ok(());
-		} else {
-
-			let response = MessageBuilder::new()
-								.push(number_of_results)
-								.push(" Results found.")
-								.build();
-			answer.push_str(response.as_ref());
-
-			
-
-			let mut show_number = 10 as usize;
-			if number_of_results < 10 {
-				show_number = number_of_results as usize;
-			} else if number_of_results > 10 {
-				answer.push_str("Output is limited to the first 10 results.")
-			}
-
-			answer.push_str("\n\n");
-
-			for element in node.find(Class("wf-module-item")).take(show_number) {
-				let name = element.text();
-				let name = name.trim();
-				let name = teamname_previously(name.to_string());
-				let name = remove_clutter(name.to_string());
-				let url = element.attr("href").unwrap();
-				let v: Vec<&str> = url.split("/").collect();
-
-
-				if v.len() < 3 {
-					continue;
-				} else {
-					match v[1] {
-						"team" => {
-							let response = MessageBuilder::new()
-								.push("**Team: ")
-								.push(name.clone())
-								.push("**\n")
-								.push("\tTeamID for over.gg is: *")
-								.push(v[2])
-								.push("*\n\n")
-								.build();
-							answer.push_str(response.as_ref());
-						},
-						"event" => {
-							let a = name.clone();//.replace("event", "");
-							let splitname: Vec<&str> = a.split("event–").collect();
-
-
-							if splitname.len() < 2 {
-								let response = MessageBuilder::new()
-									.push("**Event: ")
-									.push(name.clone())
-									.push("**\n")
-									.push("\tEvent ID for over.gg is: *")
-									.push(v[2])
-									.push("*\n\n")
-									.build();
-								answer.push_str(response.as_ref());
-							} else {
-								let response = MessageBuilder::new()
-									.push("**Event: ")
-									.push(splitname[0])
-									.push("**\n\t")
-									.push(splitname[1].trim())
-									.push("\n\tEvent ID for over.gg is: *")
-									.push(v[2])
-									.push("*\n\n")
-									.build();
-								answer.push_str(response.as_ref());
-							}
-							
-						},
-						_ => {
-							let response = MessageBuilder::new()
-								.push("Error for: ")
-								.push(name.clone())
-								.push("\n")
-								.push("Please message Bot developer\n\n")
-								.build();
-							answer.push_str(response.as_ref());
-						}
-					}
-				}
-			}
-
-
-			answer.push_str("\nUse ~team <id> or ~event <id> for more information about a specific event or team");
-			embed_succes(msg.channel_id, answer.as_ref());
-		}
-	}
-
-	//String search Found XXX Results
-
-	//if XXX == 0
-
-		//No Results found for this searchterm
-
-	//else
-
-		//for XXX > 10 show first 10 elements
-
-		//else show all elements
-
-		//
-
-		// CLASS: wf-module-item
-		// ID from href
-		// Logo from img src
-		// search-item-title (team name)
-		// search-item-desc (previous/current team)
-	
-});
-*/
