@@ -1,6 +1,8 @@
+//! Look for the latest news on over.gg
 use select::predicate::{Class, Name};
 use helpers::*;
 use social::WEBSITE;
+
 
 
 #[derive(Default, Debug, PartialEq)]
@@ -29,10 +31,19 @@ pub fn get_x(number_of_news: u32) -> Result<Vec<News>, String> {
 	news(number_of_news)
 }
 
+lazy_static! {
+	pub static ref URL: String = {
+		let s = WEBSITE.to_string() + "/news";
+		s
+	};
+}
+
+
+
 
 
 fn news(number_of_news: u32) -> Result<Vec<News>, String> {
-	let document = getcontent(&(WEBSITE.to_string() + "/news"))?;
+	let document = getcontent(&URL)?;
 
     let mut news_list: Vec<News> = Vec::new();
 

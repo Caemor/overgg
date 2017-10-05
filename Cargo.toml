@@ -11,5 +11,8 @@ select = "0.4.2"
 # For logs
 log = "0.3"
 
+# For lazy statics
+lazy_static = "0.2"
+
 
 

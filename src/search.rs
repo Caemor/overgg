@@ -13,25 +13,25 @@ pub enum SearchResult {
 
 #[derive(Debug)]
 pub struct Player {
-	id: u32,
-	url: String,
-	name: String,
-	real_name: Option<String>
+	pub id: u32,
+	pub url: String,
+	pub name: String,
+	pub real_name: Option<String>
 }
 
 #[derive(Debug)]
 pub struct Team {
-   	id: u32,
-	url: String,
-	name: String
+   	pub id: u32,
+	pub url: String,
+	pub name: String
 }
 
 #[derive(Debug)]
 pub struct Event {
-    id: u32,
-	url: String,
-	name: String,
-	add_info: Option<String>,
+    pub id: u32,
+	pub url: String,
+	pub name: String,
+	pub add_info: Option<String>,
 }
 
 pub fn get(search_term: &str) -> Result<Vec<SearchResult>, String> {

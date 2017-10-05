@@ -4,6 +4,9 @@ extern crate reqwest;
 #[macro_use]
 extern crate log;
 
+#[macro_use]
+extern crate lazy_static;
+
 
 pub mod upcoming_matches;
 pub mod social;
@@ -23,6 +26,11 @@ Upcoming_Matches ✓
 Over.gg/Social ✓
 
 Livestreams X
+
+Events X
+	- Ongoing X
+	- Completed X
+	- Upcoming X
 */
 #[cfg(test)]
 mod tests {
