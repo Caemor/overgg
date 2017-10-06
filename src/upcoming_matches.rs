@@ -2,6 +2,7 @@
 use select;
 use select::predicate::{Class};
 use helpers::{remove_clutter, getcontent};
+use social::WEBSITE;
 
 
 
@@ -48,10 +49,17 @@ pub fn get_x(number_of_matches: u32) -> Result<Vec<UpcomingMatch>, String> {
 	matches(Some(number_of_matches))
 }
 
+lazy_static! {
+	pub static ref URL: String = {
+		let s = WEBSITE.to_string() + "/matches";
+		s
+	};
+}
+
 
 
 fn matches(number_of_matches: Option<u32>) -> Result<Vec<UpcomingMatch>, String> {
-    let document = getcontent("https://www.over.gg/matches")?;
+    let document = getcontent(&URL)?;
 
     let mut matches: Vec<UpcomingMatch> = Vec::new();
 
@@ -83,7 +91,7 @@ fn parse_match(game: select::node::Node, date_storage: &str) -> Result<(Upcoming
 	let mut date_storage = date_storage.to_string();
 	
 	trace!("{:?}", remove_clutter(game.html()));
-	let url = "https://over.gg".to_string() + game.attr("href").ok_or("Could not get url of the match")?;
+	let url = WEBSITE.to_string() + game.attr("href").ok_or("Could not get url of the match")?;
 	let eventname = game.find(Class("match-item-event-name")).next().ok_or("Could not get Eventname")?.text();
 	let eventsub = game.find(Class("match-item-event-sub")).next().ok_or("Could not get Event subname")?.text();
 
