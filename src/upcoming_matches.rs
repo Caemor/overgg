@@ -8,8 +8,8 @@ use helpers::{remove_clutter, getcontent};
 /// Contains all usable data from the over.gg upcoming matches page
 #[derive(Default, Debug, PartialEq)]
 pub struct UpcomingMatch {
-	///A link to the match page
-	pub link: String,
+	///The url of the match page
+	pub url: String,
 	///Team 1
 	pub team1: UpcomingTeam,
 	///Team 2
@@ -83,7 +83,7 @@ fn parse_match(game: select::node::Node, date_storage: &str) -> Result<(Upcoming
 	let mut date_storage = date_storage.to_string();
 	
 	trace!("{:?}", remove_clutter(game.html()));
-	let link = "https://over.gg".to_string() + game.attr("href").ok_or("Could not get link to the match")?;
+	let url = "https://over.gg".to_string() + game.attr("href").ok_or("Could not get url of the match")?;
 	let eventname = game.find(Class("match-item-event-name")).next().ok_or("Could not get Eventname")?.text();
 	let eventsub = game.find(Class("match-item-event-sub")).next().ok_or("Could not get Event subname")?.text();
 
@@ -131,7 +131,7 @@ fn parse_match(game: select::node::Node, date_storage: &str) -> Result<(Upcoming
 	let time = remove_clutter(time);
 
 
-	let upc_match = UpcomingMatch {team1, team2, eta, date, time, eventname, eventsub, link};
+	let upc_match = UpcomingMatch {team1, team2, eta, date, time, eventname, eventsub, url};
 	
 
 	Ok((upc_match, date_storage))
