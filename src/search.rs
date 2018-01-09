@@ -1,7 +1,7 @@
 //! Search for Players, Teams and Events on over.gg
 //use select;
 //use select::predicate::{Class};
-use select::predicate::{Attr, Class, Name};
+use select::predicate::{Attr, Class};//, Name};
 use helpers::{remove_clutter, getcontent};
 
 use social::WEBSITE;
@@ -57,17 +57,17 @@ lazy_static! {
 fn search(search_term: &str, number_of_results: Option<u32>) -> Result<Vec<SearchResult>, String> {
 	let mut search_results: Vec<SearchResult> = Vec::new();
 
-	let document = getcontent(&("https://www.over.gg/search/?q=".to_string() + search_term))?;
+	let document = getcontent(&(URL.to_string() + search_term))?;
 
 	//Sets the limit to the amount of search results (if there is none give it is set to 10)
 	let limit = number_of_results.unwrap_or(10);
 
-	for node in document.find(Attr("id", "content")).take(1) {
-		
-		let number_of_results = get_number_of_results(node.find(Name("div")).next().ok_or("search.rs: Could not get number of results div")?.text())?;
+	for node in document.find(Attr("id", "wrapper")).take(1) {
+		/*println!("{:?}", node);
+		let number_of_results = _get_number_of_results(node.find(Name("div")).next().ok_or("search.rs: Could not get number of results div")?.text())?;
 		if number_of_results == 0 {
 			return Ok(search_results);
-		}
+		}*/
 
 
 		println!("{:?}", number_of_results);
@@ -123,7 +123,7 @@ fn search(search_term: &str, number_of_results: Option<u32>) -> Result<Vec<Searc
 }
 
 
-fn get_number_of_results(toshorten: String) -> Result<i32, String> {
+fn _get_number_of_results(toshorten: String) -> Result<i32, String> {
 	let toshorten = toshorten.replace("\t", "");
 	let toshorten = toshorten.replace("\n", "");
 	let toshorten = toshorten.replace("\"", "");
