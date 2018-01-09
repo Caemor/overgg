@@ -4,6 +4,8 @@
 use select::predicate::{Attr, Class, Name};
 use helpers::{remove_clutter, getcontent};
 
+use social::WEBSITE;
+
 #[derive(Debug)]
 pub enum SearchResult {
     Player(Player),
