@@ -44,7 +44,12 @@ pub fn get_x(search_term: &str, number_of_results: u32) -> Result<Vec<SearchResu
 }
 
 
-
+lazy_static! {
+	pub static ref URL: String = {
+		let s = WEBSITE.to_string() + "/search/?q=";
+		s
+	};
+}
 
 
 fn search(search_term: &str, number_of_results: Option<u32>) -> Result<Vec<SearchResult>, String> {
